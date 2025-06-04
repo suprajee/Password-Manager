@@ -1,0 +1,32 @@
+{
+    "manifest_version": 3,
+    "name": "My Password Manager",
+    "version": "1.0",
+    "description": "A simple password manager extension.",
+    "permissions": ["storage", "activeTab", "scripting"],
+    "host_permissions": ["https://*/*", "http://*/*"],
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "icon16.png",
+        "48": "icon48.png",
+        "128": "icon128.png"
+      }
+    },
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://*/*", "http://*/*"],
+        "js": ["autofill.js", "content.js"]
+      }
+    ],
+    "web_accessible_resources": [
+      {
+        "resources": ["utils.js"],
+        "matches": ["https://*/*", "http://*/*"]
+      }
+    ]
+}
+  
