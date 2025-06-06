@@ -5,15 +5,39 @@
 </head>
 <body>
   <h1>Password Manager</h1>
-  <form id="saveForm">
-    <input type="text" id="website" placeholder="Website URL">
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button type="submit">Save</button>
-  </form>
-  <button id="generate">Generate Password</button>
+  
+  <!-- Master Password Section -->
+  <div class="section" id="masterPasswordSection">
+    <h2>Enter Master Password</h2>
+    <form id="masterPasswordForm">
+      <input type="password" id="masterPassword" placeholder="Enter master password">
+      <button type="submit">Unlock</button>
+    </form>
+  </div>
+
+  <!-- Main Content (Hidden by default) -->
+  <div class="section" id="mainContent" style="display: none;">
+    <!-- Save New Password Form -->
+    <div class="section">
+      <h2>Save New Password</h2>
+      <form id="saveForm">
+        <input type="text" id="website" placeholder="Website URL">
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button type="submit">Save</button>
+      </form>
+      <button id="generate">Generate Password</button>
+    </div>
+
+    <!-- View Saved Passwords -->
+    <div class="section">
+      <h2>Saved Passwords</h2>
+      <div id="savedPasswords"></div>
+    </div>
+
+    <!-- Lock Button -->
+    <button id="lockButton" class="lock-button">Lock</button>
+  </div>
 </body>
 <script src="popup.js"></script>
-<script src="crypto-js.min.js"></script>
-
 </html>

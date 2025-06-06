@@ -1,42 +1,97 @@
 body {
+    width: 400px;
+    padding: 20px;
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 10px;
-    width: 250px;
     background-color: #f4f4f4;
   }
   
-  h1 {
-    font-size: 18px;
-    margin-bottom: 10px;
+  .section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
   }
   
-  form {
-    display: flex;
-    flex-direction: column;
+  h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  h2 {
+    color: #666;
+    margin-bottom: 15px;
   }
   
   input {
-    margin-bottom: 10px;
+    width: 100%;
     padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
     border-radius: 4px;
   }
   
   button {
-    margin: 10px;
-    padding: 8px;
-    font-size: 14px;
-    color: #fff;
-    background-color: #007bff;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    width: 90%;
+    width: 100%;
+    margin-bottom: 10px;
   }
   
   button:hover {
-    background-color: #0056b3;
+    background-color: #45a049;
+  }
+  
+  #generate {
+    background-color: #2196F3;
+  }
+  
+  #generate:hover {
+    background-color: #1976D2;
+  }
+  
+  .saved-password {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    position: relative;
+  }
+  
+  .saved-password button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: auto;
+    background-color: #f44336;
+  }
+  
+  .saved-password button:hover {
+    background-color: #d32f2f;
+  }
+  
+  .lock-button {
+    background-color: #ff9800;
+    margin-top: 20px;
+  }
+  
+  .lock-button:hover {
+    background-color: #f57c00;
+  }
+  
+  #masterPasswordSection {
+    text-align: center;
+  }
+  
+  #masterPasswordSection input {
+    margin-bottom: 15px;
+  }
+  
+  #masterPasswordSection button {
+    margin-top: 10px;
   }
   
