@@ -1,73 +1,174 @@
-const utilsScript = document.createElement("script");
-utilsScript.src = chrome.runtime.getURL("utils.js");
-utilsScript.type = "module";
-document.head.appendChild(utilsScript);
-
-console.log("Credential saving script loaded!");
-
-
 console.log("Autofill script loaded!");
 
-// Define selectors for common and specific login fields
-const usernameSelectors = [
-  "#email", // Facebook-specific
-  "input[name='email']",
-  "input[type='text']",
-  "#handleOrEmail"
-];
+// Function to normalize URL
+function normalizeUrl(url) {
+  try {
+    const urlObj = new URL(url);
+    return urlObj.origin + urlObj.pathname;
+  } catch (e) {
+    return url;
+  }
+}
 
-const passwordSelectors = [
-  "#pass",
-  "#password",
-  "input[name='pass']",
-  "input[type='password']"
-];
+// Function to find input fields
+function findInputFields() {
+  console.log("Searching for input fields in document");
+  
+  // Common selectors for username/email fields
+  const usernameSelectors = [
+    "input[type='text']",
+    "input[type='email']",
+    "input[name*='user']",
+    "input[name*='email']",
+    "input[id*='user']",
+    "input[id*='email']",
+    "input[placeholder*='user']",
+    "input[placeholder*='email']",
+    "input[autocomplete='username']",
+    "input[autocomplete='email']",
+    // Instagram specific selectors
+    "input[name='username']",
+    "input[aria-label='Phone number, username, or email']",
+    "input[aria-label='Username']",
+    // Codeforces specific selectors
+    "input[name='handleOrEmail']",
+    "input[id='handleOrEmail']",
+    "input[placeholder='Handle or Email']",
+    // Additional Codeforces selectors
+    "input[type='text'][name='handleOrEmail']",
+    "input[type='text'][id='handleOrEmail']",
+    "input[type='text'][placeholder='Handle or Email']",
+    "input[type='text'][name='handle']",
+    "input[type='text'][id='handle']",
+    "input[type='text'][name='email']",
+    "input[type='text'][id='email']",
+    // Try finding by form structure
+    "form input[type='text']:first-of-type",
+    "form input[type='text']:not([type='password'])"
+  ];
 
-// Function to find input fields based on selectors
-function findInputField(selectors) {
-  for (const selector of selectors) {
-    const field = document.querySelector(selector);
-    if (field) {
-      console.log(`Found field with selector: ${selector}`);
-      return field;
+  // Common selectors for password fields
+  const passwordSelectors = [
+    "input[type='password']",
+    "input[name*='pass']",
+    "input[id*='pass']",
+    "input[placeholder*='pass']",
+    "input[autocomplete='current-password']",
+    // Instagram specific selectors
+    "input[name='password']",
+    "input[aria-label='Password']",
+    // Codeforces specific selectors
+    "input[name='password']",
+    "input[id='password']",
+    // Additional Codeforces selectors
+    "input[type='password'][name='password']",
+    "input[type='password'][id='password']",
+    // Try finding by form structure
+    "form input[type='password']",
+    "form input[type='password']:last-of-type"
+  ];
+
+  // Try to find username field
+  let usernameField = null;
+  for (const selector of usernameSelectors) {
+    const fields = document.querySelectorAll(selector);
+    console.log(`Checking selector ${selector}, found ${fields.length} fields`);
+    if (fields.length > 0) {
+      usernameField = fields[0];
+      break;
     }
   }
-  console.log("No matching fields for selectors:", selectors);
-  return null;
+
+  // Try to find password field
+  let passwordField = null;
+  for (const selector of passwordSelectors) {
+    const fields = document.querySelectorAll(selector);
+    console.log(`Checking selector ${selector}, found ${fields.length} fields`);
+    if (fields.length > 0) {
+      passwordField = fields[0];
+      break;
+    }
+  }
+
+  // If we still haven't found the username field, try a more aggressive approach
+  if (!usernameField) {
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+      const textInputs = form.querySelectorAll('input[type="text"]');
+      if (textInputs.length > 0) {
+        usernameField = textInputs[0];
+        console.log("Found username field through form structure:", usernameField);
+      }
+    });
+  }
+
+  console.log("Found fields:", { usernameField, passwordField });
+  return { usernameField, passwordField };
 }
 
-// Function to autofill the fields
-function autofillFields(credentials) {
-  console.log("Attempting autofill with credentials:", credentials);
-
-  const usernameField = findInputField(usernameSelectors);
-  const passwordField = findInputField(passwordSelectors);
-
+// Function to attempt autofill
+function attemptAutofill() {
+  const { usernameField, passwordField } = findInputFields();
+  
   if (usernameField && passwordField) {
-    usernameField.value = credentials.username;
-    usernameField.dispatchEvent(new Event("input", { bubbles: true }));
+    // Fetch saved credentials
+    chrome.storage.local.get(null, (items) => {
+      console.log("Fetched saved items: ", items);
 
-    passwordField.value = credentials.password;
-    passwordField.dispatchEvent(new Event("input", { bubbles: true }));
+      const currentUrl = normalizeUrl(window.location.href);
+      console.log("Current URL: ", currentUrl);
 
-    console.log("Autofilled username and password.");
+      // Check if credentials are saved for the current URL
+      if (items[currentUrl]) {
+        const { username, password } = items[currentUrl];
+        console.log(`Autofilling for ${currentUrl}:`, { username, password });
+
+        // Set values and trigger input events
+        usernameField.value = username;
+        passwordField.value = password;
+        
+        // Trigger input events to ensure the website recognizes the changes
+        usernameField.dispatchEvent(new Event('input', { bubbles: true }));
+        passwordField.dispatchEvent(new Event('input', { bubbles: true }));
+        
+        console.log("Fields autofilled!");
+      } else {
+        console.log(`No saved credentials for ${currentUrl}`);
+      }
+    });
   } else {
-    console.log("Username or password field not found.");
+    console.log("Username or password field not found, will retry...");
+    // Retry after a short delay
+    setTimeout(attemptAutofill, 1000);
   }
 }
 
-// Fetch and decrypt saved credentials for autofill
-chrome.storage.local.get(null, (items) => {
-  console.log("Fetched saved items: ", items);
+// Start attempting to autofill
+attemptAutofill();
 
-  const currentUrl = window.location.origin;
-  console.log("Current URL: ", currentUrl);
-
-  if (items[currentUrl]) {
-    const decryptedData = decrypt(items[currentUrl]);
-    console.log(`Autofilling for ${currentUrl}:`, decryptedData);
-    autofillFields(decryptedData);
-  } else {
-    console.log(`No saved credentials for ${currentUrl}`);
+// Set up a mutation observer to detect when the form is added
+const autofillObserver = new MutationObserver((mutations) => {
+  for (const mutation of mutations) {
+    if (mutation.addedNodes.length) {
+      const { usernameField, passwordField } = findInputFields();
+      if (usernameField && passwordField) {
+        console.log("Form detected, attempting autofill");
+        attemptAutofill();
+        autofillObserver.disconnect(); // Stop observing once we find the form
+        break;
+      }
+    }
   }
 });
+
+// Start observing with a timeout
+autofillObserver.observe(document.body, {
+  childList: true,
+  subtree: true
+});
+
+// Disconnect observer after 30 seconds to prevent infinite observation
+setTimeout(() => {
+  autofillObserver.disconnect();
+  console.log("Autofill observer disconnected after timeout");
+}, 30000);
