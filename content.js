@@ -143,15 +143,21 @@ async function handleFormSubmit(event) {
       // Store credentials temporarily
       const currentUrl = normalizeUrl(window.location.href);
       
-      // Show save confirmation before form submission
-      const shouldSave = confirm(`Do you want to save these credentials?\nUsername: ${username}`);
+      // Check if these credentials were just autofilled
+      const wasAutofilled = usernameField.hasAttribute('data-autofilled') || 
+                           passwordField.hasAttribute('data-autofilled');
       
-      if (shouldSave) {
-        try {
-          await saveCredentials(username, password, currentUrl);
-          alert("Your credentials have been saved.");
-        } catch (error) {
-          console.error("Failed to save credentials:", error);
+      if (!wasAutofilled) {
+        // Only show save confirmation if credentials weren't autofilled
+        const shouldSave = confirm(`Do you want to save these credentials?\nUsername: ${username}`);
+        
+        if (shouldSave) {
+          try {
+            await saveCredentials(username, password, currentUrl);
+            alert("Your credentials have been saved.");
+          } catch (error) {
+            console.error("Failed to save credentials:", error);
+          }
         }
       }
     }

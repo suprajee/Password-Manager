@@ -127,6 +127,10 @@ function attemptAutofill() {
         usernameField.value = username;
         passwordField.value = password;
         
+        // Mark fields as autofilled
+        usernameField.setAttribute('data-autofilled', 'true');
+        passwordField.setAttribute('data-autofilled', 'true');
+        
         // Trigger input events to ensure the website recognizes the changes
         usernameField.dispatchEvent(new Event('input', { bubbles: true }));
         passwordField.dispatchEvent(new Event('input', { bubbles: true }));

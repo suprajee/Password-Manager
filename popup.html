@@ -2,6 +2,7 @@
 <html>
 <head>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
   <h1>Password Manager</h1>
@@ -10,7 +11,10 @@
   <div class="section" id="masterPasswordSection">
     <h2>Enter Master Password</h2>
     <form id="masterPasswordForm">
-      <input type="password" id="masterPassword" placeholder="Enter master password">
+      <div class="password-container">
+        <input type="password" id="masterPassword" placeholder="Enter master password">
+        <i class="fas fa-eye toggle-password" data-target="masterPassword"></i>
+      </div>
       <button type="submit">Unlock</button>
     </form>
   </div>
@@ -23,7 +27,10 @@
       <form id="saveForm">
         <input type="text" id="website" placeholder="Website URL">
         <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
+        <div class="password-container">
+          <input type="password" id="password" placeholder="Password">
+          <i class="fas fa-eye toggle-password" data-target="password"></i>
+        </div>
         <button type="submit">Save</button>
       </form>
       <button id="generate">Generate Password</button>

@@ -29,6 +29,32 @@ body {
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    box-sizing: border-box;
+    height: 36px;
+  }
+  
+  .password-container {
+    position: relative;
+    margin-bottom: 10px;
+  }
+  
+  .password-container input {
+    margin-bottom: 0;
+    padding-right: 35px;
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s ease;
+  }
+  
+  .toggle-password:hover {
+    color: #333;
   }
   
   button {
@@ -60,14 +86,28 @@ body {
     margin-bottom: 10px;
     border-radius: 4px;
     position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .saved-password > div:not(.password-container) {
+    flex-basis: 100%;
+  }
+  
+  .saved-password .password-container {
+    margin-bottom: 0;
+    flex-grow: 1;
   }
   
   .saved-password button {
-    position: absolute;
-    right: 10px;
-    top: 10px;
+    position: static;
     width: auto;
-    background-color: #f44336;
+    margin-left: auto;
+    margin-top: 0;
+    margin-bottom: 0;
   }
   
   .saved-password button:hover {
@@ -88,7 +128,7 @@ body {
   }
   
   #masterPasswordSection input {
-    margin-bottom: 15px;
+    margin-bottom: 0;
   }
   
   #masterPasswordSection button {

@@ -54,8 +54,28 @@ function displaySavedPasswords() {
         const usernameText = document.createElement('div');
         usernameText.textContent = `Username: ${data.username}`;
         
-        const passwordText = document.createElement('div');
-        passwordText.textContent = `Password: ${data.password}`;
+        const passwordContainer = document.createElement('div');
+        passwordContainer.className = 'password-container';
+        
+        const passwordInput = document.createElement('input');
+        passwordInput.type = 'password';
+        passwordInput.value = data.password;
+        passwordInput.readOnly = true;
+        
+        const toggleIcon = document.createElement('i');
+        toggleIcon.className = 'fas fa-eye toggle-password';
+        toggleIcon.onclick = () => {
+          if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.className = 'fas fa-eye-slash toggle-password';
+          } else {
+            passwordInput.type = 'password';
+            toggleIcon.className = 'fas fa-eye toggle-password';
+          }
+        };
+        
+        passwordContainer.appendChild(passwordInput);
+        passwordContainer.appendChild(toggleIcon);
         
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
@@ -67,7 +87,7 @@ function displaySavedPasswords() {
         
         passwordDiv.appendChild(urlText);
         passwordDiv.appendChild(usernameText);
-        passwordDiv.appendChild(passwordText);
+        passwordDiv.appendChild(passwordContainer);
         passwordDiv.appendChild(deleteButton);
         
         savedPasswordsDiv.appendChild(passwordDiv);
@@ -148,4 +168,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   } else {
     showMainContent();
   }
+});
+
+// Add event listeners for password toggles
+document.addEventListener('DOMContentLoaded', () => {
+  // Add toggle functionality to all password fields
+  document.querySelectorAll('.toggle-password').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      const targetId = toggle.getAttribute('data-target');
+      const input = document.getElementById(targetId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        toggle.className = 'fas fa-eye-slash toggle-password';
+      } else {
+        input.type = 'password';
+        toggle.className = 'fas fa-eye toggle-password';
+      }
+    });
+  });
 });
