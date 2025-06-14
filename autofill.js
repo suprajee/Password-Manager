@@ -1,4 +1,44 @@
 console.log("Autofill script loaded!");
+async function getKeyFromPassword(password, salt) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveKey"]
+  );
+  return crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt: enc.encode(salt),
+      iterations: 100000,
+      hash: "SHA-256"
+    },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["decrypt"]
+  );
+}
+
+async function decrypt(encrypted, password) {
+  const iv = new Uint8Array(atob(encrypted.iv).split("").map(c => c.charCodeAt(0)));
+  const salt = new Uint8Array(atob(encrypted.salt).split("").map(c => c.charCodeAt(0)));
+  const data = new Uint8Array(atob(encrypted.ciphertext).split("").map(c => c.charCodeAt(0)));
+
+  const key = await getKeyFromPassword(password, salt);
+
+  const decrypted = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv }, key, data
+  );
+
+  return new TextDecoder().decode(decrypted);
+}
+
+function getMasterPassword() {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ type: "GET_MASTER_PASSWORD" }, (response) => {
+      resolve(response?.password || null);
+    });
+  });
+}
 
 // Function to normalize URL
 function normalizeUrl(url) {
@@ -105,6 +145,17 @@ function findInputFields() {
   console.log("Found fields:", { usernameField, passwordField });
   return { usernameField, passwordField };
 }
+function getMasterPassword() {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ type: "GET_MASTER_PASSWORD" }, (response) => {
+      if (chrome.runtime.lastError) {
+        resolve(null);
+      } else {
+        resolve(response?.password || null);
+      }
+    });
+  });
+}
 
 // Function to attempt autofill
 function attemptAutofill() {
@@ -112,7 +163,7 @@ function attemptAutofill() {
   
   if (usernameField && passwordField) {
     // Fetch saved credentials
-    chrome.storage.local.get(null, (items) => {
+    chrome.storage.local.get(null, async (items) => {
       console.log("Fetched saved items: ", items);
 
       const currentUrl = normalizeUrl(window.location.href);
@@ -120,7 +171,12 @@ function attemptAutofill() {
 
       // Check if credentials are saved for the current URL
       if (items[currentUrl]) {
-        const { username, password } = items[currentUrl];
+        const masterPassword = await getMasterPassword();
+        if (!masterPassword) return;
+
+        const { username, password: encrypted } = items[currentUrl];
+        const password = await decrypt(encrypted, masterPassword);
+
         console.log(`Autofilling for ${currentUrl}:`, { username, password });
 
         // Set values and trigger input events

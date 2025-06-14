@@ -105,15 +105,33 @@ function findInputFields() {
   console.log("Found fields:", { usernameField, passwordField });
   return { usernameField, passwordField };
 }
+function getMasterPassword() {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ type: "GET_MASTER_PASSWORD" }, (response) => {
+      if (chrome.runtime.lastError) {
+        resolve(null);
+      } else {
+        resolve(response?.password || null);
+      }
+    });
+  });
+}
 
 // Function to save credentials
 function saveCredentials(username, password, url) {
-  return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage(
-      {
-        type: 'SAVE_CREDENTIALS',
-        data: { username, password, url }
-      },
+  return new Promise(async (resolve, reject) => {
+        const masterPassword = await getMasterPassword();
+        if (!masterPassword) {
+          alert("Master password not unlocked.");
+          return;
+        }
+        const encrypted = await encrypt(password, masterPassword);
+
+        chrome.runtime.sendMessage({
+          type: 'SAVE_CREDENTIALS',
+          data: { username, password: encrypted, url }
+        },
+
       (response) => {
         if (chrome.runtime.lastError) {
           console.error('Error saving credentials:', chrome.runtime.lastError);
