@@ -10,7 +10,7 @@ A secure and user-friendly Chrome extension for managing your passwords across d
 - 👁️ **Password Visibility Toggle**: Easily view or hide your passwords
 - 🔑 **Password Generator**: Generate strong, random passwords
 - 🗑️ **Password Management**: Add, view, and delete saved passwords
-- 🔐 **Secure Storage**: Passwords are stored locally in your browser
+- 🔐 **Secure Storage**: Passwords are hashed and the corresponding hash is stored locally in your browser
 
 ## Installation
 
@@ -42,7 +42,7 @@ A secure and user-friendly Chrome extension for managing your passwords across d
 
 ### Security Features
 - Master password protection
-- Local storage of credentials
+- Local storage of hash of credentials
 - Password visibility toggle
 - Secure password generation
 
@@ -66,17 +66,13 @@ A secure and user-friendly Chrome extension for managing your passwords across d
 
 ## Security Considerations
 
-- All passwords are stored locally in your browser
+- All passwords are hashed and the corresponding hash is stored locally in your browser
 - Use a strong master password
 - Regularly update your saved passwords
 - Don't share your master password
 - Keep your browser and extension updated
 
-## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
