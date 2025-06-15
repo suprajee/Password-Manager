@@ -15,14 +15,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 
-  // 🔐 Handle setting master password
+  // Handle setting master password
   if (request.type === 'SET_MASTER_PASSWORD') {
     unlockedMasterPassword = request.data;
     sendResponse({ success: true });
     return true;
   }
 
-  // 🔓 Handle getting master password
+  // Handle getting master password
   if (request.type === 'GET_MASTER_PASSWORD') {
     sendResponse({ password: unlockedMasterPassword });
     return true;

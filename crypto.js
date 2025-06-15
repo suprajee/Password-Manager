@@ -1,4 +1,3 @@
-// Derive a key from the master password using PBKDF2
 async function getKeyFromPassword(password, salt) {
   const enc = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey(

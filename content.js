@@ -26,15 +26,12 @@ function findInputFields() {
     "input[placeholder*='email']",
     "input[autocomplete='username']",
     "input[autocomplete='email']",
-    // Instagram specific selectors
     "input[name='username']",
     "input[aria-label='Phone number, username, or email']",
     "input[aria-label='Username']",
-    // Codeforces specific selectors
     "input[name='handleOrEmail']",
     "input[id='handleOrEmail']",
     "input[placeholder='Handle or Email']",
-    // Additional Codeforces selectors
     "input[type='text'][name='handleOrEmail']",
     "input[type='text'][id='handleOrEmail']",
     "input[type='text'][placeholder='Handle or Email']",
@@ -42,7 +39,6 @@ function findInputFields() {
     "input[type='text'][id='handle']",
     "input[type='text'][name='email']",
     "input[type='text'][id='email']",
-    // Try finding by form structure
     "form input[type='text']:first-of-type",
     "form input[type='text']:not([type='password'])"
   ];
@@ -54,16 +50,12 @@ function findInputFields() {
     "input[id*='pass']",
     "input[placeholder*='pass']",
     "input[autocomplete='current-password']",
-    // Instagram specific selectors
     "input[name='password']",
     "input[aria-label='Password']",
-    // Codeforces specific selectors
     "input[name='password']",
     "input[id='password']",
-    // Additional Codeforces selectors
     "input[type='password'][name='password']",
     "input[type='password'][id='password']",
-    // Try finding by form structure
     "form input[type='password']",
     "form input[type='password']:last-of-type"
   ];
@@ -90,7 +82,6 @@ function findInputFields() {
     }
   }
 
-  // If we still haven't found the username field, try a more aggressive approach
   if (!usernameField) {
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
@@ -166,7 +157,6 @@ async function handleFormSubmit(event) {
                            passwordField.hasAttribute('data-autofilled');
       
       if (!wasAutofilled) {
-        // Only show save confirmation if credentials weren't autofilled
         const shouldSave = confirm(`Do you want to save these credentials?\nUsername: ${username}`);
         
         if (shouldSave) {
@@ -209,7 +199,6 @@ function attachEventListeners() {
       if (form) {
         handleFormSubmit(new Event('submit', { bubbles: true })).catch(console.error);
       } else {
-        // For buttons not in forms (like Instagram's login button)
         handleFormSubmit(event).catch(console.error);
       }
     }, true);
@@ -257,7 +246,7 @@ setTimeout(() => {
   console.log("Form observer disconnected after timeout");
 }, 30000);
 
-// Also monitor for button clicks that might submit forms
+// monitor for button clicks that might submit forms
 document.addEventListener('click', (event) => {
   const target = event.target;
   if (target.tagName === 'BUTTON' || target.tagName === 'INPUT') {

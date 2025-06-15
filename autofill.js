@@ -66,15 +66,12 @@ function findInputFields() {
     "input[placeholder*='email']",
     "input[autocomplete='username']",
     "input[autocomplete='email']",
-    // Instagram specific selectors
     "input[name='username']",
     "input[aria-label='Phone number, username, or email']",
     "input[aria-label='Username']",
-    // Codeforces specific selectors
     "input[name='handleOrEmail']",
     "input[id='handleOrEmail']",
     "input[placeholder='Handle or Email']",
-    // Additional Codeforces selectors
     "input[type='text'][name='handleOrEmail']",
     "input[type='text'][id='handleOrEmail']",
     "input[type='text'][placeholder='Handle or Email']",
@@ -82,7 +79,6 @@ function findInputFields() {
     "input[type='text'][id='handle']",
     "input[type='text'][name='email']",
     "input[type='text'][id='email']",
-    // Try finding by form structure
     "form input[type='text']:first-of-type",
     "form input[type='text']:not([type='password'])"
   ];
@@ -94,16 +90,12 @@ function findInputFields() {
     "input[id*='pass']",
     "input[placeholder*='pass']",
     "input[autocomplete='current-password']",
-    // Instagram specific selectors
     "input[name='password']",
     "input[aria-label='Password']",
-    // Codeforces specific selectors
     "input[name='password']",
     "input[id='password']",
-    // Additional Codeforces selectors
     "input[type='password'][name='password']",
     "input[type='password'][id='password']",
-    // Try finding by form structure
     "form input[type='password']",
     "form input[type='password']:last-of-type"
   ];
@@ -130,7 +122,6 @@ function findInputFields() {
     }
   }
 
-  // If we still haven't found the username field, try a more aggressive approach
   if (!usernameField) {
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
@@ -169,7 +160,6 @@ function attemptAutofill() {
       const currentUrl = normalizeUrl(window.location.href);
       console.log("Current URL: ", currentUrl);
 
-      // Check if credentials are saved for the current URL
       if (items[currentUrl]) {
         const masterPassword = await getMasterPassword();
         if (!masterPassword) return;
@@ -214,7 +204,7 @@ const autofillObserver = new MutationObserver((mutations) => {
       if (usernameField && passwordField) {
         console.log("Form detected, attempting autofill");
         attemptAutofill();
-        autofillObserver.disconnect(); // Stop observing once we find the form
+        autofillObserver.disconnect(); 
         break;
       }
     }

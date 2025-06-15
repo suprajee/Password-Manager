@@ -1,5 +1,4 @@
-// --- Crypto Utility Functions ---
-
+// Crypto Utility Functions 
 async function getKeyFromPassword(password, salt) {
   const enc = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey(
@@ -50,8 +49,7 @@ async function decrypt(encrypted, password) {
   return new TextDecoder().decode(decrypted);
 }
 
-// --- Master Password Utilities ---
-
+// Master Password Utilities 
 function isMasterPasswordSet() {
   return new Promise((resolve) => {
     chrome.storage.local.get('masterPassword', (result) => {
@@ -82,8 +80,7 @@ async function getMasterPassword() {
   });
 }
 
-// --- UI Helpers ---
-
+// UI Helpers 
 function showMainContent() {
   document.getElementById('masterPasswordSection').style.display = 'none';
   document.getElementById('mainContent').style.display = 'block';
@@ -96,8 +93,7 @@ function hideMainContent() {
   document.getElementById('masterPassword').value = '';
 }
 
-// --- Display Passwords ---
-
+// Display Passwords 
 async function displaySavedPasswords() {
   const savedPasswordsDiv = document.getElementById('savedPasswords');
   chrome.storage.local.get(null, async (items) => {
@@ -164,8 +160,7 @@ async function displaySavedPasswords() {
   });
 }
 
-// --- Event Handlers ---
-
+// Event Handlers 
 document.getElementById("masterPasswordForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const password = document.getElementById("masterPassword").value;
@@ -235,8 +230,7 @@ document.getElementById("generate").addEventListener("click", () => {
   document.getElementById("password").value = generatedPassword;
 });
 
-// --- Initial Load ---
-
+// Initial Load 
 document.addEventListener('DOMContentLoaded', async () => {
   const isSet = await isMasterPasswordSet();
 
