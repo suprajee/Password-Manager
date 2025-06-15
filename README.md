@@ -72,10 +72,3 @@ A secure and user-friendly Chrome extension for managing your passwords across d
 - Don't share your master password
 - Keep your browser and extension updated
 
-
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-If you encounter any issues or have suggestions, please open an issue in the repository.
